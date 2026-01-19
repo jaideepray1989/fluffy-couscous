@@ -9,6 +9,6 @@ __pycache__/
 *.egg-info/
 
 # Data, runs, and downloaded models
-data/
-runs/
-models/
+/data/
+/runs/
+/models/
