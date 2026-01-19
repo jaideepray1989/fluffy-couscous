@@ -1,0 +1,65 @@
+{
+  "version": "0.1",
+  "seed_policy": "deterministic",
+  "canonical_representation": "point(x,y,t,pen)",
+  "tests": [
+    {"name": "prefix_points", "params": {"k": [10, 20, 30, 50, 70, 100]}},
+    {"name": "prefix_strokes", "params": {"k": [10, 20, 30, 50, 70, 100]}},
+    {"name": "stroke_dropout", "params": {"p": [0.1, 0.2, 0.3, 0.5]}},
+    {"name": "point_dropout", "params": {"p": [0.1, 0.2, 0.3, 0.5]}},
+    {"name": "resample_uniform", "params": {"N": [8, 16, 32, 64]}},
+    {"name": "resample_arclength", "params": {"N": [8, 16, 32, 64]}},
+    {"name": "subsample_ratio", "params": {"r": [0.25, 0.5, 0.75]}},
+    {"name": "simplify_rdp", "params": {"epsilon": [0.5, 1.0, 2.0]}},
+    {"name": "simplify_ratio", "params": {"ratio": [0.25, 0.5, 0.75]}},
+    {"name": "split_stroke", "params": {"k": [2, 3, 4]}},
+    {"name": "merge_strokes", "params": {"threshold": [0.02, 0.05]}},
+    {"name": "penup_noise", "params": {"drop_prob": [0.1, 0.2], "insert_prob": [0.1]}},
+    {"name": "reverse_strokes", "params": {}},
+    {"name": "local_shuffle_strokes", "params": {"window": [2, 3, 5]}},
+    {"name": "reverse_points_within_stroke", "params": {}},
+    {"name": "time_warp", "params": {"factor": [0.5, 1.0, 2.0]}},
+    {"name": "jitter_xy", "params": {"sigma": [0.005, 0.01, 0.02]}},
+    {"name": "quantize_xy", "params": {"bits": [4, 6, 8]}},
+    {"name": "timestamp_jitter", "params": {"sigma": [0.5, 1.0]}},
+    {"name": "translate", "params": {"dx": [0.05], "dy": [0.05]}},
+    {"name": "scale", "params": {"factor": [0.9, 1.1]}},
+    {"name": "rotate", "params": {"degrees": [-10, -5, 5, 10]}},
+    {"name": "start_point_shift", "params": {"shift_pct": [10, 25, 50]}}
+  ],
+  "confusion_sets": [
+    {
+      "name": "containers",
+      "classes": ["cup", "mug", "bowl", "bottle"],
+      "pairs": [["cup", "mug"], ["bowl", "cup"]]
+    }
+  ],
+  "scoring": {
+    "headline": ["clean_acc", "prefix_auc", "robustness_auc", "worst_cluster_acc"],
+    "weights": {
+      "prefix_points": 1.0,
+      "prefix_strokes": 1.0,
+      "stroke_dropout": 1.0,
+      "point_dropout": 1.0,
+      "resample_uniform": 1.0,
+      "resample_arclength": 1.0,
+      "subsample_ratio": 1.0,
+      "simplify_rdp": 0.5,
+      "simplify_ratio": 0.5,
+      "split_stroke": 1.0,
+      "merge_strokes": 1.0,
+      "penup_noise": 1.0,
+      "reverse_strokes": 1.0,
+      "local_shuffle_strokes": 1.0,
+      "reverse_points_within_stroke": 1.0,
+      "time_warp": 1.0,
+      "jitter_xy": 1.0,
+      "quantize_xy": 1.0,
+      "timestamp_jitter": 0.5,
+      "translate": 0.25,
+      "scale": 0.25,
+      "rotate": 0.25,
+      "start_point_shift": 0.5
+    }
+  }
+}

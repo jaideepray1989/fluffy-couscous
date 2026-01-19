@@ -1,0 +1,55 @@
+# QuickDraw Capability Report
+
+## Headline metrics
+- clean_acc: 1.0000
+- jitter_xy_mean: 1.0000
+- jitter_xy_robustness: 1.0000
+- local_shuffle_strokes_mean: 1.0000
+- local_shuffle_strokes_robustness: 1.0000
+- merge_strokes_mean: 1.0000
+- merge_strokes_robustness: 1.0000
+- overall_score: 0.0000
+- penup_noise_mean: 1.0000
+- penup_noise_robustness: 1.0000
+- point_dropout_mean: 1.0000
+- point_dropout_robustness: 1.0000
+- prefix_points_mean: 1.0000
+- prefix_points_robustness: 1.0000
+- prefix_strokes_mean: 1.0000
+- prefix_strokes_robustness: 1.0000
+- quantize_xy_mean: 1.0000
+- quantize_xy_robustness: 1.0000
+- resample_arclength_mean: 1.0000
+- resample_arclength_robustness: 1.0000
+- resample_uniform_mean: 1.0000
+- resample_uniform_robustness: 1.0000
+- reverse_points_within_stroke_mean: 1.0000
+- reverse_points_within_stroke_robustness: 1.0000
+- reverse_strokes_mean: 1.0000
+- reverse_strokes_robustness: 1.0000
+- rotate_mean: 1.0000
+- rotate_robustness: 1.0000
+- scale_mean: 1.0000
+- scale_robustness: 1.0000
+- simplify_ratio_mean: 1.0000
+- simplify_ratio_robustness: 1.0000
+- simplify_rdp_mean: 1.0000
+- simplify_rdp_robustness: 1.0000
+- split_stroke_mean: 1.0000
+- split_stroke_robustness: 1.0000
+- start_point_shift_mean: 1.0000
+- start_point_shift_robustness: 1.0000
+- stroke_dropout_mean: 1.0000
+- stroke_dropout_robustness: 1.0000
+- subsample_ratio_mean: 1.0000
+- subsample_ratio_robustness: 1.0000
+- time_warp_mean: 1.0000
+- time_warp_robustness: 1.0000
+- timestamp_jitter_mean: 1.0000
+- timestamp_jitter_robustness: 1.0000
+- translate_mean: 1.0000
+- translate_robustness: 1.0000
+
+## Curves
+- prefix_points: [(10, 1.0), (20, 1.0), (30, 1.0), (50, 1.0), (70, 1.0), (100, 1.0)]
+- prefix_strokes: [(10, 1.0), (20, 1.0), (30, 1.0), (50, 1.0), (70, 1.0), (100, 1.0)]

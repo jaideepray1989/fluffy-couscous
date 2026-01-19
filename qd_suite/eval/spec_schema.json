@@ -1,0 +1,42 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "QuickDraw Capability Suite Spec",
+  "type": "object",
+  "required": ["version", "seed_policy", "canonical_representation", "tests", "confusion_sets", "scoring"],
+  "properties": {
+    "version": { "type": "string" },
+    "seed_policy": { "type": "string" },
+    "canonical_representation": { "type": "string" },
+    "tests": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "params"],
+        "properties": {
+          "name": { "type": "string" },
+          "params": { "type": "object" },
+          "weight": { "type": "number" }
+        }
+      }
+    },
+    "confusion_sets": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "classes"],
+        "properties": {
+          "name": { "type": "string" },
+          "classes": { "type": "array", "items": { "type": "string" } },
+          "pairs": { "type": "array", "items": { "type": "array", "items": { "type": "string" }, "minItems": 2, "maxItems": 2 } }
+        }
+      }
+    },
+    "scoring": {
+      "type": "object",
+      "properties": {
+        "headline": { "type": "array", "items": { "type": "string" } },
+        "weights": { "type": "object" }
+      }
+    }
+  }
+}
