@@ -7,3 +7,8 @@ __pycache__/
 
 # Build artifacts
 *.egg-info/
+
+# Data, runs, and downloaded models
+data/
+runs/
+models/
