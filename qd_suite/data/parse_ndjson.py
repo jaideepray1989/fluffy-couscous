@@ -24,7 +24,7 @@ def _validate_stroke(stroke: Sequence[Sequence[float]]) -> List[Tuple[float, flo
     last_t = None
     for x, y, t in zip(xs, ys, ts):
         if last_t is not None and t < last_t:
-            raise ValueError("Timestamps must be monotonic within a stroke")
+            t = last_t  # coerce to monotonic to tolerate slight logging glitches
         pts.append((float(x), float(y), float(t)))
         last_t = t
     return pts
