@@ -27,19 +27,25 @@ class QuickDrawDataset:
     def __init__(
         self,
         paths: Sequence[Path | str],
-        limit: Optional[int] = None,
+        limit_per_class: Optional[int] = None,
+        offset_per_class: int = 0,
         normalize_xy_first: bool = True,
         normalize_time_mode: str = "relative",
     ):
         self.samples: List[Sample] = []
         for path in paths:
+            label = Path(path).stem
+            count = 0
+            skipped = 0
             for raw in iter_sketches(path):
+                if skipped < offset_per_class:
+                    skipped += 1
+                    continue
+                if limit_per_class is not None and count >= limit_per_class:
+                    break
                 seq = to_pointseq(raw, normalize_xy_first=normalize_xy_first, normalize_time_mode=normalize_time_mode)
                 self.samples.append(Sample(sequence=seq, label=raw.word))
-                if limit is not None and len(self.samples) >= limit:
-                    break
-            if limit is not None and len(self.samples) >= limit:
-                break
+                count += 1
 
     def __len__(self) -> int:
         return len(self.samples)
@@ -48,11 +54,16 @@ class QuickDrawDataset:
         return iter(self.samples)
 
 
-def load_from_root(root: Path | str, classes: Iterable[str], limit_per_class: Optional[int] = None) -> QuickDrawDataset:
+def load_from_root(
+    root: Path | str,
+    classes: Iterable[str],
+    limit_per_class: Optional[int] = None,
+    offset_per_class: int = 0,
+) -> QuickDrawDataset:
     root_path = Path(root)
     paths: List[Path] = []
     for name in classes:
         candidate = ndjson_for_class(root_path, name)
         if candidate.exists():
             paths.append(candidate)
-    return QuickDrawDataset(paths=paths, limit=limit_per_class)
+    return QuickDrawDataset(paths=paths, limit_per_class=limit_per_class, offset_per_class=offset_per_class)

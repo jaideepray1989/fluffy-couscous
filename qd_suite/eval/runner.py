@@ -12,7 +12,7 @@ from ..data.dataset import QuickDrawDataset, Sample, load_from_root
 from ..repr.pointseq import Point, PointSequence
 from ..repr.pointseq import PenState
 from ..repr.pointseq import flatten_strokes
-from ..transforms import affine, dropout, noise, prefix, reorder, resample, segment, simplify
+from ..transforms import affine, compound, dropout, noise, prefix, reorder, resample, segment, simplify
 from . import confusion, metrics, scoring
 from .reporting import write_metrics_json, write_report
 
@@ -41,6 +41,10 @@ TRANSFORM_REGISTRY = {
     "scale": affine.scale,
     "rotate": affine.rotate,
     "start_point_shift": affine.start_point_shift,
+    "dropout_jitter": compound.dropout_jitter,
+    "resample_rotate": compound.resample_rotate,
+    "split_shuffle": compound.split_shuffle,
+    "quant_scale": compound.quant_scale,
 }
 
 
@@ -82,12 +86,12 @@ def synthetic_samples() -> List[Sample]:
     return samples
 
 
-def load_dataset(data_dir: str | None, classes: List[str] | None, limit: int | None) -> List[Sample]:
+def load_dataset(data_dir: str | None, classes: List[str] | None, limit: int | None, offset: int = 0) -> List[Sample]:
     if data_dir:
         class_list = classes or []
         if not class_list:
             class_list = [p.stem for p in Path(data_dir).glob("*.ndjson")]
-        dataset = load_from_root(Path(data_dir), class_list, limit_per_class=limit)
+        dataset = load_from_root(Path(data_dir), class_list, limit_per_class=limit, offset_per_class=offset)
         return dataset.samples
     return synthetic_samples()
 
@@ -152,6 +156,7 @@ def parse_args(argv: List[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--data", help="Directory containing class ndjson files")
     parser.add_argument("--classes", help="Comma-separated class names to load")
     parser.add_argument("--limit", type=int, help="Limit number of samples per class")
+    parser.add_argument("--offset", type=int, default=0, help="Number of samples to skip per class before loading")
     parser.add_argument("--run-dir", default="runs/latest", help="Output directory for metrics/report")
     return parser.parse_args(argv)
 
@@ -161,7 +166,7 @@ def main(argv: List[str] | None = None) -> int:
     spec_data = json.loads(Path(args.spec).read_text())
     adapter = load_adapter(args.model)
     classes = args.classes.split(",") if args.classes else None
-    samples = load_dataset(args.data, classes, args.limit)
+    samples = load_dataset(args.data, classes, args.limit, offset=args.offset)
     metrics_dict, summary, curves = run_suite(samples, adapter, spec_data)
     run_dir = Path(args.run_dir)
     write_metrics_json(run_dir, metrics_dict)
