@@ -4,6 +4,7 @@
 # Bytecode and caches
 __pycache__/
 .pytest_cache/
+.DS_Store
 
 # Build artifacts
 *.egg-info/

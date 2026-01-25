@@ -24,6 +24,9 @@ def parse_args():
     p.add_argument("--layers", type=int, default=4)
     p.add_argument("--ffn", type=int, default=256)
     p.add_argument("--dropout", type=float, default=0.1)
+    p.add_argument("--input-dropout", type=float, default=0.0)
+    p.add_argument("--pooling", choices=["mean", "attn", "cls"], default="attn")
+    p.add_argument("--grad-clip", type=float, default=1.0)
     p.add_argument("--run-dir", default="runs/transformer")
     return p.parse_args()
 
@@ -41,6 +44,8 @@ def main():
         num_layers=args.layers,
         dim_feedforward=args.ffn,
         dropout=args.dropout,
+        input_dropout=args.input_dropout,
+        pooling=args.pooling,
         num_classes=len(classes),
         include_time=True,
         deltas=True,
@@ -59,12 +64,14 @@ def main():
         correct = 0
         total = 0
         for x, lengths, labels in loader:
-            pad_mask = torch.arange(x.size(1))[None, :].expand(x.size(0), -1) >= lengths[:, None]
-            x, pad_mask, labels = x.to(device), pad_mask.to(device), labels.to(device)
+            x, lengths, labels = x.to(device), lengths.to(device), labels.to(device)
+            pad_mask = torch.arange(x.size(1), device=device)[None, :].expand(x.size(0), -1) >= lengths[:, None]
             opt.zero_grad()
             logits = model(x, src_key_padding_mask=pad_mask)
             loss = criterion(logits, labels)
             loss.backward()
+            if args.grad_clip > 0:
+                torch.nn.utils.clip_grad_norm_(model.parameters(), args.grad_clip)
             opt.step()
             total_loss += loss.item() * labels.size(0)
             correct += (logits.argmax(1) == labels).sum().item()

@@ -17,7 +17,7 @@ class TransformerAdapter(ModelAdapter):
         cfg = TransformerConfig(**ckpt["config"])
         self.classes = ckpt["classes"]
         self.model = StrokeTransformer(cfg)
-        self.model.load_state_dict(ckpt["model_state"])
+        self.model.load_state_dict(ckpt["model_state"], strict=False)
         self.model.eval()
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self.model.to(self.device)

@@ -50,8 +50,9 @@ class TransformerClassifier(nn.Module):
         # Apply the transformer encoder
         encoder_output = self.transformer_encoder(pos_encoded, src_key_padding_mask=mask)
         
-        # Pool the output (mean pooling)
-        pooled = encoder_output.mean(dim=1)
+        # Pool the output (masked mean)
+        valid = (~mask).unsqueeze(-1)
+        pooled = (encoder_output * valid).sum(dim=1) / valid.sum(dim=1).clamp(min=1.0)
         
         return self.fc(pooled)
 
@@ -64,7 +65,7 @@ class TransformerConfig(GRUConfig):
 
 def build_model(num_classes: int, config: TransformerConfig | None = None) -> TransformerClassifier:
     cfg = config or TransformerConfig()
-    input_dim = 3 if (cfg.deltas and not cfg.include_time) else 4
+    input_dim = 4 if cfg.include_time else 3
     model = TransformerClassifier(
         input_dim=input_dim,
         model_dim=cfg.model_dim,
